@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import *
 class Clock5Run(QMainWindow):
     __WSep = 2
     __WX = __WY = 2
+    __Colons = [':', ' ']
     def __init__(self, config, app, parent=None):
         super().__init__()
         self.__Config = config
@@ -81,6 +82,7 @@ class Clock5Run(QMainWindow):
         sys.exit(self.__App.exec())
 
     def secondsTimer(self):
+        colon = Clock5Run.__Colons[self.__TimeCount % 2]
         self.__TimeCount += 1
         self.labelTime.setText(f'{QDateTime.currentDateTime()}')
-        self.labelTimeCount.setText(f'{self.__TimeCount}')
+        self.labelTimeCount.setText(f'{colon}{self.__TimeCount}{colon}')
