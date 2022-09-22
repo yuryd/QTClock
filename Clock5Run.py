@@ -42,6 +42,7 @@ class Clock5Run(QMainWindow):
         self.labelALFText.setText(self.__Config.ActivityListFile())
         self.labelTime = QLabel(self)
         self.labelTimeCount = QLabel(self)
+        self.labelTimeCount.setAlignment(Qt.AlignCenter)
         self.secondsTimer() # just to start the time display
 
         #Connect all widgets
@@ -56,8 +57,10 @@ class Clock5Run(QMainWindow):
         footingLayout.addWidget(self.labelALF)
         footingLayout.addWidget(self.labelALFText)
         centreLayout = QVBoxLayout()
+        centreLayout2 = QHBoxLayout()
         centreLayout.addWidget(self.labelTime)
-        centreLayout.addWidget(self.labelTimeCount)
+        centreLayout2.addWidget(self.labelTimeCount)
+        centreLayout.addLayout(centreLayout2)
         outerLayout.addLayout(headingLayout)
         outerLayout.addLayout(centreLayout)
         outerLayout.addLayout(footingLayout)
