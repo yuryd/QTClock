@@ -9,12 +9,24 @@ class Clock5Run(QMainWindow):
     __WSep = 2
     __WX = __WY = 2
     __Colons = [':', ' ']
+    __StartingColons = 10
+    __ColonList = [ ':'*10,
+            ':'*9,
+            ':'*8,
+            ':'*7,
+            ':'*6,
+            ':'*5,
+            ':'*4,
+            ':'*3,
+            ':'*2,
+            ':'*1]
     def __init__(self, config, app, parent=None):
         super().__init__()
         self.__Config = config
         self.__App = app
         self.__Count = 0
         self.__TimeCount = 0
+        self.__ColonCounter = 0
         self.setupUI()
 
     def newWindowTitle(self):
@@ -82,7 +94,11 @@ class Clock5Run(QMainWindow):
         sys.exit(self.__App.exec())
 
     def secondsTimer(self):
-        colon = Clock5Run.__Colons[self.__TimeCount % 2]
+        #colon = Clock5Run.__Colons[self.__TimeCount % 2]
+        colon = Clock5Run.__ColonList[self.__ColonCounter]
+        self.__ColonCounter = 0 if self.__ColonCounter == len(Clock5Run.__ColonList) - 1 else self.__ColonCounter + 1
+        #self.__ColonCounter -= 1
+        #self.__ColonCounter = self.__ColonCounter if self.__ColonCounter >= 0 else 9
         self.__TimeCount += 1
         self.labelTime.setText(f'{QDateTime.currentDateTime()}')
         self.labelTimeCount.setText(f'{colon}{self.__TimeCount}{colon}')
