@@ -42,6 +42,7 @@ class Clock5Run(QMainWindow):
         self.setCentralWidget(self.centralWidget)
 
         #Create all widgets
+        timeFont = QFont('Arial', 16)
         self.labelName = QLabel(self)
         self.labelAuthor = QLabel(self)
         self.labelVersion = QLabel(self)
@@ -57,6 +58,7 @@ class Clock5Run(QMainWindow):
         self.labelTime = QLabel(self)
         self.labelTimeCount = QLabel(self)
         self.labelTimeCount.setAlignment(Qt.AlignCenter)
+        self.labelTime.setFont(timeFont)
         self.secondsTimer() # just to start the time display
 
         #Connect all widgets
@@ -99,7 +101,8 @@ class Clock5Run(QMainWindow):
         colon = Clock5Run.__ColonList[self.__ColCnt]
         self.colCount()
         self.__TimeCount += 1
-        self.labelTime.setText(f'{QDateTime.currentDateTime()}')
+        now = datetime.datetime.now().strftime('%b %d, %Y %H:%M:%S')
+        self.labelTime.setText(f'{now}')
         self.labelTimeCount.setText(f'{colon}{self.__TimeCount}{colon}')
 
     def colCount(self):
