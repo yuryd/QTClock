@@ -5,6 +5,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+import CheckBox
+
 class Clock5Run(QMainWindow):
     __WSep = 2
     __WX = __WY = 2
@@ -42,24 +44,31 @@ class Clock5Run(QMainWindow):
         self.setCentralWidget(self.centralWidget)
 
         #Create all widgets
-        timeFont = QFont('Arial', 16)
+        timeFont = QFont('Arial', 24)
+        dateFont = QFont('Arial', 12)
         self.labelName = QLabel(self)
         self.labelAuthor = QLabel(self)
         self.labelVersion = QLabel(self)
         self.labelALF = QLabel(self)
         self.labelALFText = QLabel(self)
-        self.pushButton = QPushButton("Press me!")
-        self.pushButton.clicked.connect(self.buttonPressed)
+        self.cb24hrClock = QCheckBox("24hr Clock")
+        self.cbNoSeconds = QCheckBox("No Seconds")
         self.labelName.setText(self.__Config.Identification("Name"))
         self.labelAuthor.setText(self.__Config.Identification("Author"))
         self.labelVersion.setText(f'{self.__Config.Identification("Version")["Major"]}.{self.__Config.Identification("Version")["Minor"]} {self.__Config.Identification("Version")["Status"]}')
         self.labelALF.setText('ALF:')
         self.labelALFText.setText(self.__Config.ActivityListFile())
+        self.labelDate = QLabel(self)
         self.labelTime = QLabel(self)
+        self.labelAmPm = QLabel(self)
         self.labelTimeCount = QLabel(self)
+        self.labelTime.setAlignment(Qt.AlignCenter)
+        self.labelDate.setAlignment(Qt.AlignCenter)
         self.labelTimeCount.setAlignment(Qt.AlignCenter)
+        self.labelDate.setFont(dateFont)
         self.labelTime.setFont(timeFont)
-        self.labelTime.setStyleSheet("border: 1px solid black;")
+        self.labelAmPm.setFont(timeFont)
+        #self.labelTime.setStyleSheet("border: 1px solid black;")
         self.secondsTimer() # just to start the time display
 
         #Connect all widgets
@@ -69,14 +78,26 @@ class Clock5Run(QMainWindow):
         headingLayout.addWidget(self.labelVersion)
         headingLayout.addWidget(self.labelAuthor)
         headingLayout.addStretch()
-        headingLayout.addWidget(self.pushButton)
+        headingLayout.addWidget(self.cb24hrClock)
+        headingLayout.addWidget(self.cbNoSeconds)
         footingLayout = QHBoxLayout()
         footingLayout.addWidget(self.labelALF)
         footingLayout.addWidget(self.labelALFText)
+
+        centreFrame = QFrame()
+        centreFrame.setFrameShape(QFrame.StyledPanel)
+        centreFrame.setLineWidth(1)
+
         centreLayout = QVBoxLayout()
+        centreLayout1 = QHBoxLayout(centreFrame)
         centreLayout2 = QHBoxLayout()
-        centreLayout.addWidget(self.labelTime)
+
+        centreLayout1.addWidget(self.labelTime)
+        centreLayout1.addWidget(self.labelAmPm)
         centreLayout2.addWidget(self.labelTimeCount)
+        centreLayout.addWidget(self.labelDate)
+        #centreLayout.addLayout(centreLayout1)
+        centreLayout.addWidget(centreFrame)
         centreLayout.addLayout(centreLayout2)
         outerLayout.addLayout(headingLayout)
         outerLayout.addLayout(centreLayout)
@@ -90,9 +111,6 @@ class Clock5Run(QMainWindow):
         timeTimer.start()
 
 
-    def buttonPressed(self):
-        self.newWindowTitle()
-
     def Run(self):
         self.show()
         sys.exit(self.__App.exec())
@@ -102,10 +120,16 @@ class Clock5Run(QMainWindow):
         colon = Clock5Run.__ColonList[self.__ColCnt]
         self.colCount()
         self.__TimeCount += 1
-        now = datetime.datetime.now().strftime('%b %d, %Y %H:%M:%S')
-        self.labelTime.setText(f'{now}')
+        now = datetime.datetime.now()
+        nowDate = now.strftime('%b %d, %Y')
+        nowTime = now.strftime('%H:%M:%S')
+        nowAmPm = now.strftime('%p')
+        self.labelDate.setText(f'{nowDate}')
+        self.labelTime.setText(f'{nowTime}')
+        self.labelAmPm.setText(f'{nowAmPm}' if not(self.Is24hrClock()) else f'')
         self.labelTimeCount.setText(f'{colon}{self.__TimeCount}{colon}')
         self.labelTime.adjustSize()
+        self.labelDate.adjustSize()
         self.labelTimeCount.adjustSize()
 
     def colCount(self):
@@ -113,3 +137,9 @@ class Clock5Run(QMainWindow):
             (self.__ColCnt, self.__ColCntDir) = (Clock5Run.__MaxVal - 1, -1) if self.__ColCnt == Clock5Run.__MaxVal else (self.__ColCnt + 1, self.__ColCntDir)
         else:
             (self.__ColCnt, self.__ColCntDir) = (1, 1) if self.__ColCnt == 0 else (self.__ColCnt - 1, self.__ColCntDir)
+
+    def Is24hrClock(self):
+        pass
+
+    def IsNoSeconds(self):  
+        return self.cb24hrClock.isChecked()
