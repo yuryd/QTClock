@@ -22,6 +22,8 @@ class Clock5Run(QMainWindow):
             ':'*2,
             ':'*1]
     __MaxVal = len(__ColonList) - 1
+
+    __AmPmTimeFmt = [ ['%H:%M:%S','%I:%M:%S'], ['%H:%M','%I:%M'] ]
     def __init__(self, config, app, parent=None):
         super().__init__()
         self.__Config = config
@@ -122,13 +124,13 @@ class Clock5Run(QMainWindow):
         self.__TimeCount += 1
         now = datetime.datetime.now()
         nowDate = now.strftime('%b %d, %Y')
-        nowTime = now.strftime('%H:%M:%S')
+        nowTime = now.strftime(Clock5Run.__AmPmTimeFmt[self.IsNoSeconds()][self.Is24hrClock()])
         nowAmPm = now.strftime('%p')
         self.labelDate.setText(f'{nowDate}')
         self.labelTime.setText(f'{nowTime}')
         self.labelAmPm.setText(f'{nowAmPm}' if not(self.Is24hrClock()) else f'')
         self.labelTimeCount.setText(f'{colon}{self.__TimeCount}{colon}')
-        self.labelTime.adjustSize()
+        #self.labelTime.adjustSize()
         self.labelDate.adjustSize()
         self.labelTimeCount.adjustSize()
 
@@ -139,7 +141,7 @@ class Clock5Run(QMainWindow):
             (self.__ColCnt, self.__ColCntDir) = (1, 1) if self.__ColCnt == 0 else (self.__ColCnt - 1, self.__ColCntDir)
 
     def Is24hrClock(self):
-        pass
+        return self.cb24hrClock.isChecked()
 
     def IsNoSeconds(self):  
-        return self.cb24hrClock.isChecked()
+        return self.cbNoSeconds.isChecked()
