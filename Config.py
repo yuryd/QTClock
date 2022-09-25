@@ -1,8 +1,8 @@
 import json
 from geopy.geocoders import Nominatim
+import geocoder
 import datetime
-import tzlocal
-import requests
+from WeatherTypes import *
 
 class ConfigError(Exception):
     pass
@@ -44,41 +44,36 @@ class Config:
         try:
             with open(Config.__LocalConfigFile) as LocalConfigFile:
                 localConfigData = json.load(LocalConfigFile)
-        except:
-            FileNotFoundError:
+        except FileNotFoundError:
                 pass
 
         if localConfigData is None:
             loc = Nominatim(user_agent="GetLoc")
+            weatherType = WeatherTypes.GetDefaultType()
             url = "https://api.open-meteo.com/v1/forecast?"
             key = ""
             daily="daily=weathercode,temperature_2m_max,temperature_2m_min"
             hourly="temperature_2m"
             timezone = "timezone=auto"
-            location = tzlocal.get_localzone_name()
-            getLoc = log.geocode(location)
-            position = f'longitude={getLoc.longitude}&latitude={getLoc.latitude}'
+            getLocFull = geocoder.ip("me")
+            print(getLocFull.geojson)
+            getLoc = getLocFull.geojson["features"][0]["properties"]
+            address = getLoc["address"]
+            position = f'longitude={getLoc["lat"]}&latitude={getLoc["lng"]}'
             fullUrl = f'{url}?{position}&{hourly}&{daily}&{timezone}'
-            localConfigData = {"url": fullUrl, "key": key}
+            localConfigData = {"wt": weatherType, 
+                    "url": url, 
+                    "key": key,
+                    "fullUrl": fullUrl,
+                    "daily": daily,
+                    "hourly": hourly,
+                    "timezone": timezone,
+                    "position": position,
+                    "address": address}
             with open(Config.__LocalConfigFile, "w") as localConfig:
                 json.dump(localConfigData, localConfig, indent=4)
 
-        self.GetTemperature()
-
-    def GetTemperature(self):
-        localConfigData = None
-        with open(Config.__LocalConfigFile) as LocalConfigFile:
-            localConfigData = json.load(LocalConfigFile)
-        url = localConfigData["url"]
-        key = localConfigData["key"]
-        if key == "":
-            resp = request.get(fullUrl)
-            x = json.load(resp)
-        self.__tempCharacter = x["hourly_units"]["temperature_2m"]
-        currHr = datetime.datetime.now().strftime('%Y-%m-%dT%H:00')
-        hrIdx = x["hourly"]["time"].index(currHr) #find the current hour index
-        self.__CurrTemperature = x["hourly"].temperature_2m[hrIdx]
-            #https://api.open-meteo.com/v1/forecast?latitude=44.70&longitude=-63.66&hourly=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto
+        self.__localConfig = localConfig
 
     @classmethod
     def __CheckVersion(cls, cv, sv): #cv config version data, sv section version
@@ -98,3 +93,6 @@ class Config:
 
     def ActivityListFile(self, param=None): #param included for future growth, no current param supported
         return self.__ActivityListFile if param is None else None
+
+    def GetLocalConfig(self):
+        return self.__localConfig

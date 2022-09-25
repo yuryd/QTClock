@@ -5,8 +5,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-import CheckBox
-
 class Clock5Run(QMainWindow):
     __WSep = 2
     __WX = __WY = 2
@@ -63,13 +61,16 @@ class Clock5Run(QMainWindow):
         self.labelDate = QLabel(self)
         self.labelTime = QLabel(self)
         self.labelAmPm = QLabel(self)
+        self.labelLocation = QLabel(self)
         self.labelTimeCount = QLabel(self)
         self.labelTime.setAlignment(Qt.AlignCenter)
         self.labelDate.setAlignment(Qt.AlignCenter)
         self.labelTimeCount.setAlignment(Qt.AlignCenter)
+        self.labelLocation.setAlignment(Qt.AlignCenter)
         self.labelDate.setFont(dateFont)
         self.labelTime.setFont(timeFont)
         self.labelAmPm.setFont(timeFont)
+        self.labelLocation.setFont(timeFont)
         #self.labelTime.setStyleSheet("border: 1px solid black;")
         self.secondsTimer() # just to start the time display
 
@@ -101,6 +102,7 @@ class Clock5Run(QMainWindow):
         #centreLayout.addLayout(centreLayout1)
         centreLayout.addWidget(centreFrame)
         centreLayout.addLayout(centreLayout2)
+        centreLayout.addWidget(self.labelLocation)
         outerLayout.addLayout(headingLayout)
         outerLayout.addLayout(centreLayout)
         outerLayout.addLayout(footingLayout)

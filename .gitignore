@@ -6,3 +6,5 @@ venv
 *.json~
 *.md~
 *.bat~
+Clock5_local.json
+*.swo
