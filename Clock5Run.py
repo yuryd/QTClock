@@ -5,6 +5,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+import Temperature
+
 class Clock5Run(QMainWindow):
     __WSep = 2
     __WX = __WY = 2
@@ -25,11 +27,13 @@ class Clock5Run(QMainWindow):
     def __init__(self, config, app, parent=None):
         super().__init__()
         self.__Config = config
+        self.__LocalConfig = config.GetLocalConfigData()
         self.__App = app
         self.__Count = 0
         self.__TimeCount = 0
         self.__ColCnt = 0
         self.__ColCntDir = 1
+        self.__Temp = Temperature.Temperature(self.__LocalConfig)
         self.setupUI()
 
     def newWindowTitle(self):
@@ -132,6 +136,8 @@ class Clock5Run(QMainWindow):
         self.labelTime.setText(f'{nowTime}')
         self.labelAmPm.setText(f'{nowAmPm}' if not(self.Is24hrClock()) else f'')
         self.labelTimeCount.setText(f'{colon}{self.__TimeCount}{colon}')
+        temp = self.__Temp.GetTemperature()
+        self.labelLocation.setText(f'{self.__LocalConfig["address"]} {temp[1]}{temp[0]}')
         #self.labelTime.adjustSize()
         self.labelDate.adjustSize()
         self.labelTimeCount.adjustSize()

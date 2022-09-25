@@ -3,17 +3,21 @@
 Clock running under QT5: Windows, Linux
 
 Dependencies:
-(PyQt5, geopy, tzlocal, geocoder)
+(PyQt5, geopy, geocoder)
+
 
 Preparation:
-cd cloned directory
+	cd cloned directory
 
-python -m venv venv
-(Windows) call venv\Scripts\activate.bat
-(Linux) source venv/Scripts/activate
+	python -m venv venv
+	(Windows) call venv\Scripts\activate.bat
+	(Linux) source venv/Scripts/activate
 
-Dependencies:
-pip install PyQt5
-pip install geopy
-pip install tzlocal
-pip install geocoder
+	Dependencies:
+		pip install PyQt5
+		pip install geopy
+		pip install geocoder
+
+Executing:
+	(Windows) Double-click the Clock5.bat icon
+	(Linux) Not available yet

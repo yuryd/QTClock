@@ -50,16 +50,16 @@ class Config:
         if localConfigData is None:
             loc = Nominatim(user_agent="GetLoc")
             weatherType = WeatherTypes.GetDefaultType()
-            url = "https://api.open-meteo.com/v1/forecast?"
+            url = "https://api.open-meteo.com/v1/forecast"
             key = ""
             daily="daily=weathercode,temperature_2m_max,temperature_2m_min"
-            hourly="temperature_2m"
+            hourly="hourly=temperature_2m"
             timezone = "timezone=auto"
             getLocFull = geocoder.ip("me")
             print(getLocFull.geojson)
             getLoc = getLocFull.geojson["features"][0]["properties"]
             address = getLoc["address"]
-            position = f'longitude={getLoc["lat"]}&latitude={getLoc["lng"]}'
+            position = f'longitude={getLoc["lng"]}&latitude={getLoc["lat"]}'
             fullUrl = f'{url}?{position}&{hourly}&{daily}&{timezone}'
             localConfigData = {"wt": weatherType, 
                     "url": url, 
@@ -72,8 +72,9 @@ class Config:
                     "address": address}
             with open(Config.__LocalConfigFile, "w") as localConfig:
                 json.dump(localConfigData, localConfig, indent=4)
-
-        self.__localConfig = localConfig
+            self.__localConfig = localConfigData
+        else:
+            self.__localConfig = localConfigData
 
     @classmethod
     def __CheckVersion(cls, cv, sv): #cv config version data, sv section version
@@ -94,5 +95,5 @@ class Config:
     def ActivityListFile(self, param=None): #param included for future growth, no current param supported
         return self.__ActivityListFile if param is None else None
 
-    def GetLocalConfig(self):
+    def GetLocalConfigData(self):
         return self.__localConfig
