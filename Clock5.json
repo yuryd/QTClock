@@ -7,10 +7,10 @@
 		"Name": "Clock5",
 		"Author": "Yury Donskoy",
 		"Version": {
-			"Major": 0,
-			"Minor": "001",
-			"Subversion": "aa",
-			"Status": "Dev"
+			"Major": 1,
+			"Minor": "000",
+			"Subversion": "20220925",
+			"Status": "Prod"
 		}
 	},
 	"ActivityListFile": "./Activities.json"
