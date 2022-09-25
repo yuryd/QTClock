@@ -23,7 +23,7 @@ class Clock5Run(QMainWindow):
             ':'*1]
     __MaxVal = len(__ColonList) - 1
 
-    __AmPmTimeFmt = [ ['%H:%M:%S','%I:%M:%S'], ['%H:%M','%I:%M'] ]
+    __AmPmTimeFmt = [ ['%I:%M:%S','%H:%M:%S'], ['%I:%M','%H:%M'] ]
     def __init__(self, config, app, parent=None):
         super().__init__()
         self.__Config = config
