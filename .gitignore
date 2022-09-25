@@ -1,0 +1,10 @@
+venv
+*.un~
+*.swp
+*.pyc
+*.py~
+*.json~
+*.md~
+*.bat~
+Clock5_local.json
+*.swo

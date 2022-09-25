@@ -1,0 +1,17 @@
+{
+	"ConfigVersion": {
+		"Major": 1,
+		"Minor": 0
+	},
+	"Identification": {
+		"Name": "Clock5",
+		"Author": "Yury Donskoy",
+		"Version": {
+			"Major": 0,
+			"Minor": "001",
+			"Subversion": "aa",
+			"Status": "Dev"
+		}
+	},
+	"ActivityListFile": "./Activities.json"
+}
