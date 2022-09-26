@@ -12,6 +12,9 @@ class Clock5Run(QMainWindow):
     __WSep = 2
     __WX = __WY = 2
     __Colons = [':', ' ']
+    #__UpDownArrows = [ '‘' , '“', ' ' ]
+
+    #__UpDownArrows = [ QChar(0x1F815), QChar(0x1F817), ' ' ]
 
     __AmPmTimeFmt = [ ['%I:%M:%S','%H:%M:%S'], ['%I:%M','%H:%M'] ]
     def __init__(self, config, app, parent=None):
@@ -23,6 +26,7 @@ class Clock5Run(QMainWindow):
         self.__ColCnt = 0
         self.__ColCntDir = 1
         self.__Temp = Temperature.Temperature(self.__LocalConfig)
+        self.__PrevTemp = 99999999999
         self.setupUI()
 
     def newWindowTitle(self):
@@ -121,7 +125,7 @@ class Clock5Run(QMainWindow):
         self.labelAmPm.setText(f'{nowAmPm}' if not(self.Is24hrClock()) else f'')
         self.labelTZ.setText(time.tzname[time.daylight])
         temp = self.__Temp.GetTemperature()
-        self.labelLocation.setText(f'{self.__LocalConfig["address"]} {temp[1]}{temp[0]}')
+        self.labelLocation.setText(f'{self.__LocalConfig["address"]} {temp[1]}{temp[0]}{temp[2]}')
         #self.labelTime.adjustSize()
         self.labelDate.adjustSize()
 
