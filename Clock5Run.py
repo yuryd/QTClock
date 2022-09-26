@@ -1,5 +1,6 @@
 import sys
 import datetime
+import time
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -11,17 +12,9 @@ class Clock5Run(QMainWindow):
     __WSep = 2
     __WX = __WY = 2
     __Colons = [':', ' ']
-    __ColonList = [ ':'*10,
-            ':'*9,
-            ':'*8,
-            ':'*7,
-            ':'*6,
-            ':'*5,
-            ':'*4,
-            ':'*3,
-            ':'*2,
-            ':'*1]
-    __MaxVal = len(__ColonList) - 1
+    #__UpDownArrows = [ '‘' , '“', ' ' ]
+
+    #__UpDownArrows = [ QChar(0x1F815), QChar(0x1F817), ' ' ]
 
     __AmPmTimeFmt = [ ['%I:%M:%S','%H:%M:%S'], ['%I:%M','%H:%M'] ]
     def __init__(self, config, app, parent=None):
@@ -30,15 +23,15 @@ class Clock5Run(QMainWindow):
         self.__LocalConfig = config.GetLocalConfigData()
         self.__App = app
         self.__Count = 0
-        self.__TimeCount = 0
         self.__ColCnt = 0
         self.__ColCntDir = 1
         self.__Temp = Temperature.Temperature(self.__LocalConfig)
+        self.__PrevTemp = 99999999999
         self.setupUI()
 
     def newWindowTitle(self):
         self.__Count += 1
-        self.setWindowTitle(f'{self.__Config.Identification("Name")} {self.__Count}')
+        self.setWindowTitle(f'{self.__Config.Identification("Name")}')
 
     def setupUI(self):
         self.resize(200,200)
@@ -59,17 +52,16 @@ class Clock5Run(QMainWindow):
         self.cbNoSeconds = QCheckBox("No Seconds")
         self.labelName.setText(self.__Config.Identification("Name"))
         self.labelAuthor.setText(self.__Config.Identification("Author"))
-        self.labelVersion.setText(f'{self.__Config.Identification("Version")["Major"]}.{self.__Config.Identification("Version")["Minor"]} {self.__Config.Identification("Version")["Status"]}')
+        self.labelVersion.setText(f'{self.__Config.Identification("Version")["Major"]}.{self.__Config.Identification("Version")["Minor"]}-{self.__Config.Identification("Version")["Subversion"]} {self.__Config.Identification("Version")["Status"]}')
         self.labelALF.setText('ALF:')
         self.labelALFText.setText(self.__Config.ActivityListFile())
         self.labelDate = QLabel(self)
         self.labelTime = QLabel(self)
         self.labelAmPm = QLabel(self)
+        self.labelTZ = QLabel(self)
         self.labelLocation = QLabel(self)
-        self.labelTimeCount = QLabel(self)
         self.labelTime.setAlignment(Qt.AlignCenter)
         self.labelDate.setAlignment(Qt.AlignCenter)
-        self.labelTimeCount.setAlignment(Qt.AlignCenter)
         self.labelLocation.setAlignment(Qt.AlignCenter)
         self.labelDate.setFont(dateFont)
         self.labelTime.setFont(timeFont)
@@ -101,7 +93,7 @@ class Clock5Run(QMainWindow):
 
         centreLayout1.addWidget(self.labelTime)
         centreLayout1.addWidget(self.labelAmPm)
-        centreLayout2.addWidget(self.labelTimeCount)
+        centreLayout1.addWidget(self.labelTZ)
         centreLayout.addWidget(self.labelDate)
         #centreLayout.addLayout(centreLayout1)
         centreLayout.addWidget(centreFrame)
@@ -124,10 +116,6 @@ class Clock5Run(QMainWindow):
         sys.exit(self.__App.exec())
 
     def secondsTimer(self):
-        #colon = Clock5Run.__Colons[self.__TimeCount % 2]
-        colon = Clock5Run.__ColonList[self.__ColCnt]
-        self.colCount()
-        self.__TimeCount += 1
         now = datetime.datetime.now()
         nowDate = now.strftime('%b %d, %Y')
         nowTime = now.strftime(Clock5Run.__AmPmTimeFmt[self.IsNoSeconds()][self.Is24hrClock()])
@@ -135,18 +123,11 @@ class Clock5Run(QMainWindow):
         self.labelDate.setText(f'{nowDate}')
         self.labelTime.setText(f'{nowTime}')
         self.labelAmPm.setText(f'{nowAmPm}' if not(self.Is24hrClock()) else f'')
-        self.labelTimeCount.setText(f'{colon}{self.__TimeCount}{colon}')
+        self.labelTZ.setText(time.tzname[time.daylight])
         temp = self.__Temp.GetTemperature()
-        self.labelLocation.setText(f'{self.__LocalConfig["address"]} {temp[1]}{temp[0]}')
+        self.labelLocation.setText(f'{self.__LocalConfig["address"]} {temp[1]}{temp[0]}{temp[2]}')
         #self.labelTime.adjustSize()
         self.labelDate.adjustSize()
-        self.labelTimeCount.adjustSize()
-
-    def colCount(self):
-        if self.__ColCntDir == 1:
-            (self.__ColCnt, self.__ColCntDir) = (Clock5Run.__MaxVal - 1, -1) if self.__ColCnt == Clock5Run.__MaxVal else (self.__ColCnt + 1, self.__ColCntDir)
-        else:
-            (self.__ColCnt, self.__ColCntDir) = (1, 1) if self.__ColCnt == 0 else (self.__ColCnt - 1, self.__ColCntDir)
 
     def Is24hrClock(self):
         return self.cb24hrClock.isChecked()

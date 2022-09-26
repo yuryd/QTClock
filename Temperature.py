@@ -18,12 +18,14 @@ class Temperature:
 
         self.__prevTime = None
 
+        self.__prevTemp = None
+
     def GetTemperature(self):
         if self.__key is None or self.__key == "":
             currHr = datetime.datetime.now().strftime(Temperature.__TimeFmt)
             if self.__prevTime is None or self.__prevTime != currHr:
                 self.__prevTime = currHr
-                print(f'Temperature Retrieved at {currHr}')
+                #print(f'Temperature Retrieved at {currHr}')
                 resp = requests.get(self.__fullUrl).content
                 #print(resp)
                 wData = json.loads(resp)
@@ -31,7 +33,9 @@ class Temperature:
                 self.__tempCharacter = wData["hourly_units"]["temperature_2m"]
                 hrIdx = wData["hourly"]["time"].index(currHr) #find the current hour index
                 self.__currTemperature = wData["hourly"]["temperature_2m"][hrIdx]
-            return (self.__tempCharacter, self.__currTemperature)
+                self.__trendChar = '\u21C5' if self.__prevTemp is None or self.__currTemperature == self.__prevTemp else '\U0001F817' if self.__currTemperature > self.__prevTemp else '\U0001F815'
+                self.__prevTemp = self.__currTemperature
+            return (self.__tempCharacter, self.__currTemperature, self.__trendChar)
         return (None, None)
             #https://api.open-meteo.com/v1/forecast?latitude=44.70&longitude=-63.66&hourly=temperature_2m&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto
 
