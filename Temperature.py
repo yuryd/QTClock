@@ -33,7 +33,7 @@ class Temperature:
                 self.__tempCharacter = wData["hourly_units"]["temperature_2m"]
                 hrIdx = wData["hourly"]["time"].index(currHr) #find the current hour index
                 self.__currTemperature = wData["hourly"]["temperature_2m"][hrIdx]
-                self.__trendChar = '\u21C5' if self.__prevTemp is None or self.__currTemperature == self.__prevTemp else '\U0001F817' if self.__currTemperature > self.__prevTemp else '\U0001F815'
+                self.__trendChar = '\u21C5' if self.__prevTemp is None or self.__currTemperature == self.__prevTemp else '\U0001F815' if self.__currTemperature > self.__prevTemp else '\U0001F817'
                 self.__prevTemp = self.__currTemperature
             return (self.__tempCharacter, self.__currTemperature, self.__trendChar)
         return (None, None)
