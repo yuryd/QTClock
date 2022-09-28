@@ -6,7 +6,7 @@ Dependencies:
 (PyQt5, geopy, geocoder, requests)
 
 
-Preparation:
+Preparation: (Old steps, you can still do this. Alternatively, simply run the batch file, it will set everything up the first time and exit, then run it again)
 	cd cloned directory
 
 	python -m venv venv
