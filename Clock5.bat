@@ -1,6 +1,6 @@
 @echo off
 echo Setup virtual environment
-if not exists venv goto :novenv
+if not exist venv goto :novenv
 call :activate
 echo Starting Clock5
 python Clock5.py
