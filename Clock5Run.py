@@ -110,7 +110,6 @@ class Clock5Run(QMainWindow):
         timeTimer.timeout.connect(self.secondsTimer)
         timeTimer.start()
 
-
     def Run(self):
         self.show()
         sys.exit(self.__App.exec())
